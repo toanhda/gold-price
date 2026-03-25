@@ -188,11 +188,29 @@ button:focus-visible {
 
 .gold-board__title {
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  line-height: 1.12;
+}
+
+.gold-board__title-prefix {
   font-family: var(--font-display);
-  font-size: clamp(1.85rem, 5vw, 3.15rem);
+  font-size: clamp(0.95rem, 2.4vw, 1.4rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(244, 232, 180, 0.92);
+  text-transform: none;
+  text-shadow: 0 0 24px var(--gold-glow);
+}
+
+.gold-board__title-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 4.6vw, 3rem);
   font-weight: 800;
   letter-spacing: 0.07em;
-  line-height: 1.1;
   color: var(--gold-soft);
   text-transform: uppercase;
   text-shadow: 0 0 48px var(--gold-glow), 0 2px 0 rgba(0, 0, 0, 0.35);
@@ -324,6 +342,18 @@ button:focus-visible {
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.gold-board__unit-note {
+  margin: 0;
+  padding: 0.5rem 0.85rem 0.65rem;
+  text-align: right;
+  font-size: clamp(0.68rem, 1.15vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .gold-board__aside {
@@ -543,6 +573,22 @@ button:focus-visible {
   margin: 0;
 }
 
+.admin-page__hint {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--muted);
+  background: rgba(110, 216, 240, 0.08);
+  border: 1px solid rgba(110, 216, 240, 0.18);
+  border-radius: 10px;
+}
+
+.admin-page__hint strong {
+  color: var(--cyan);
+  font-weight: 700;
+}
+
 .admin-page__form {
   display: flex;
   flex-direction: column;
@@ -669,6 +715,17 @@ button:focus-visible {
   font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.admin-table__unit {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  opacity: 0.95;
 }
 
 .admin-table tbody tr:nth-child(even) {

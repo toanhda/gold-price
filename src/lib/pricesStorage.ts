@@ -5,14 +5,16 @@ export type GoldRow = {
   sell: number
 }
 
-export const STORAGE_KEY = 'gold-price-board-v1'
+/** Giá lưu theo VNĐ đầy đủ / chỉ */
+export const STORAGE_KEY = 'gold-price-board-v2'
+const LEGACY_STORAGE_KEY = 'gold-price-board-v1'
 
 export const DEFAULT_ROWS: GoldRow[] = [
-  { id: '24k', label: 'VÀNG 24K', buy: 15500, sell: 15900 },
-  { id: '23k', label: 'VÀNG 23K', buy: 15400, sell: 15850 },
-  { id: '610', label: 'VÀNG 610', buy: 9000, sell: 10000 },
-  { id: '10k', label: 'VÀNG 10K', buy: 6100, sell: 7100 },
-  { id: 'silver', label: 'BẠC', buy: 130, sell: 230 },
+  { id: '24k', label: 'VÀNG 24K', buy: 15_500_000, sell: 15_900_000 },
+  { id: '23k', label: 'VÀNG 23K', buy: 15_400_000, sell: 15_850_000 },
+  { id: '610', label: 'VÀNG 610', buy: 9_000_000, sell: 10_000_000 },
+  { id: '10k', label: 'VÀNG 10K', buy: 6_100_000, sell: 7_100_000 },
+  { id: 'silver', label: 'BẠC', buy: 130_000, sell: 230_000 },
 ]
 
 function isGoldRow(x: unknown): x is GoldRow {
@@ -28,32 +30,54 @@ function isGoldRow(x: unknown): x is GoldRow {
   )
 }
 
+function parseRowsFromJson(
+  parsed: unknown,
+  legacyThousands: boolean,
+): GoldRow[] | null {
+  if (!Array.isArray(parsed) || parsed.length !== DEFAULT_ROWS.length) {
+    return null
+  }
+  const rows: GoldRow[] = []
+  const mult = legacyThousands ? 1000 : 1
+  for (let i = 0; i < DEFAULT_ROWS.length; i++) {
+    const d = DEFAULT_ROWS[i]
+    const item = parsed[i]
+    if (!isGoldRow(item) || item.id !== d.id) {
+      return null
+    }
+    rows.push({
+      ...d,
+      label: d.label,
+      buy: Math.max(0, Math.round(item.buy * mult)),
+      sell: Math.max(0, Math.round(item.sell * mult)),
+    })
+  }
+  return rows
+}
+
 export function loadRows(): GoldRow[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return [...DEFAULT_ROWS]
-    const parsed = JSON.parse(raw) as unknown
-    if (!Array.isArray(parsed) || parsed.length !== DEFAULT_ROWS.length) {
-      return [...DEFAULT_ROWS]
+    const v2 = localStorage.getItem(STORAGE_KEY)
+    if (v2) {
+      const parsed = JSON.parse(v2) as unknown
+      const rows = parseRowsFromJson(parsed, false)
+      if (rows) return rows
     }
-    const rows: GoldRow[] = []
-    for (let i = 0; i < DEFAULT_ROWS.length; i++) {
-      const d = DEFAULT_ROWS[i]
-      const item = parsed[i]
-      if (!isGoldRow(item) || item.id !== d.id) {
-        return [...DEFAULT_ROWS]
+
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY)
+    if (legacy) {
+      const parsed = JSON.parse(legacy) as unknown
+      const rows = parseRowsFromJson(parsed, true)
+      if (rows) {
+        saveRows(rows)
+        localStorage.removeItem(LEGACY_STORAGE_KEY)
+        return rows
       }
-      rows.push({
-        ...d,
-        label: d.label,
-        buy: item.buy,
-        sell: item.sell,
-      })
     }
-    return rows
   } catch {
-    return [...DEFAULT_ROWS]
+    /* fall through */
   }
+  return [...DEFAULT_ROWS]
 }
 
 export function saveRows(rows: GoldRow[]): void {

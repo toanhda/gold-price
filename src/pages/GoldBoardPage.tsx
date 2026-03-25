@@ -14,8 +14,9 @@ function formatNowVi(): string {
   return `${time} Ngày ${d.getDate()} Tháng ${d.getMonth() + 1} Năm ${d.getFullYear()}`
 }
 
-function formatPrice(n: number): string {
-  return n.toLocaleString('vi-VN')
+/** Giá lưu là VNĐ/chỉ (đủ đồng) */
+function formatPriceVnd(n: number): string {
+  return Math.round(n).toLocaleString('vi-VN')
 }
 
 export function GoldBoardPage() {
@@ -83,7 +84,10 @@ export function GoldBoardPage() {
 
       <header className="gold-board__header">
         <div className="gold-board__header-accent" aria-hidden />
-        <h1 className="gold-board__title">VÀNG BẠC KIM PHÁT</h1>
+        <h1 className="gold-board__title">
+          <span className="gold-board__title-prefix">Doanh nghiệp</span>
+          <span className="gold-board__title-name">VÀNG BẠC KIM PHÁT</span>
+        </h1>
         <p className="gold-board__subtitle">KÍNH CHÀO QUÝ KHÁCH</p>
       </header>
 
@@ -102,12 +106,17 @@ export function GoldBoardPage() {
               {rows.map((r) => (
                 <tr key={r.id}>
                   <td className="gold-table__label">{r.label}</td>
-                  <td className="gold-table__num">{formatPrice(r.buy)}</td>
-                  <td className="gold-table__num">{formatPrice(r.sell)}</td>
+                  <td className="gold-table__num">
+                    {formatPriceVnd(r.buy)}
+                  </td>
+                  <td className="gold-table__num">
+                    {formatPriceVnd(r.sell)}
+                  </td>
                 </tr>
               ))}
             </tbody>
             </table>
+            <p className="gold-board__unit-note">Đơn vị: VNĐ/chỉ</p>
           </div>
         </div>
 
@@ -147,7 +156,7 @@ export function GoldBoardPage() {
       <footer className="gold-board__footer">
         <div className="gold-board__footer-inner">
           <p className="gold-board__footer-tag">
-            VÀNG BẠC KIM PHÁT <span className="gold-board__footer-dot">·</span> Uy tín{' '}
+            Doanh nghiệp VÀNG BẠC KIM PHÁT <span className="gold-board__footer-dot">·</span> Uy tín{' '}
             <span className="gold-board__footer-dot">·</span> Chất lượng
           </p>
           <p className="gold-board__hotline">

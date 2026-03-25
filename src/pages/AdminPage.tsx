@@ -70,7 +70,7 @@ export function AdminPage() {
     return (
       <div className="admin-page">
         <div className="admin-page__card">
-          <p className="admin-page__eyebrow">Vàng Bạc Kim Phát</p>
+          <p className="admin-page__eyebrow">Doanh nghiệp Vàng Bạc Kim Phát</p>
           <h1 className="admin-page__h1">Đăng nhập quản trị</h1>
           <form onSubmit={login} className="admin-page__form">
             <label className="admin-page__field">
@@ -117,13 +117,21 @@ export function AdminPage() {
             Đăng xuất
           </button>
         </div>
+        <p className="admin-page__hint">
+          Nhập giá đủ <strong>VNĐ/chỉ</strong> (ví dụ 15.500.000 — có thể gõ
+          không dấu chấm).
+        </p>
         <form onSubmit={save}>
           <table className="admin-table">
             <thead>
               <tr>
                 <th>Loại</th>
-                <th>Giá mua</th>
-                <th>Giá bán</th>
+                <th>
+                  Giá mua <span className="admin-table__unit">(VNĐ/chỉ)</span>
+                </th>
+                <th>
+                  Giá bán <span className="admin-table__unit">(VNĐ/chỉ)</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -134,7 +142,7 @@ export function AdminPage() {
                     <input
                       type="number"
                       min={0}
-                      step={1}
+                      step={1000}
                       className="admin-table__input"
                       value={r.buy}
                       onChange={(e) => updateCell(i, 'buy', e.target.value)}
@@ -144,7 +152,7 @@ export function AdminPage() {
                     <input
                       type="number"
                       min={0}
-                      step={1}
+                      step={1000}
                       className="admin-table__input"
                       value={r.sell}
                       onChange={(e) => updateCell(i, 'sell', e.target.value)}
