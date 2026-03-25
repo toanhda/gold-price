@@ -89,3 +89,25 @@ export function saveRows(rows: GoldRow[]): void {
   }))
   localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
 }
+
+/** Dùng cho API / Supabase: chuẩn hóa mảng JSON thành GoldRow[] */
+export function normalizeRowsFromUnknown(rows: unknown): GoldRow[] | null {
+  if (!Array.isArray(rows) || rows.length !== DEFAULT_ROWS.length) {
+    return null
+  }
+  const out: GoldRow[] = []
+  for (let i = 0; i < DEFAULT_ROWS.length; i++) {
+    const d = DEFAULT_ROWS[i]
+    const item = rows[i]
+    if (!isGoldRow(item) || item.id !== d.id) {
+      return null
+    }
+    out.push({
+      ...d,
+      label: d.label,
+      buy: Math.max(0, Math.round(item.buy)),
+      sell: Math.max(0, Math.round(item.sell)),
+    })
+  }
+  return out
+}

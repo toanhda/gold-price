@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGoldPrices } from '../hooks/useGoldPrices'
+import { isRemoteConfigured } from '../lib/remotePrices'
 import type { GoldRow } from '../lib/pricesStorage'
 
 const AUTH_KEY = 'gold-admin-auth'
+/** Lưu session để sau F5 vẫn gọi được API lưu giá (chỉ tab hiện tại) */
+const WRITE_KEY = 'gold-admin-write-secret'
 const USER = 'admin'
 const PASS = '123456'
 
@@ -16,17 +19,25 @@ export function AdminPage() {
   const [authed, setAuthed] = useState(
     () => sessionStorage.getItem(AUTH_KEY) === '1',
   )
+  const [writeSecret, setWriteSecret] = useState<string | null>(() =>
+    sessionStorage.getItem(AUTH_KEY) === '1'
+      ? sessionStorage.getItem(WRITE_KEY)
+      : null,
+  )
   const [user, setUser] = useState('')
   const [pass, setPass] = useState('')
   const [loginError, setLoginError] = useState('')
   const [draft, setDraft] = useState<GoldRow[]>(() => cloneRows(rows))
   const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   const login = (e: React.FormEvent) => {
     e.preventDefault()
     setLoginError('')
     if (user === USER && pass === PASS) {
       sessionStorage.setItem(AUTH_KEY, '1')
+      sessionStorage.setItem(WRITE_KEY, pass)
+      setWriteSecret(pass)
       setAuthed(true)
       setDraft(cloneRows(rows))
       setPass('')
@@ -37,6 +48,8 @@ export function AdminPage() {
 
   const logout = () => {
     sessionStorage.removeItem(AUTH_KEY)
+    sessionStorage.removeItem(WRITE_KEY)
+    setWriteSecret(null)
     setAuthed(false)
     setUser('')
     setPass('')
@@ -60,10 +73,18 @@ export function AdminPage() {
     setSaved(false)
   }
 
-  const save = (e: React.FormEvent) => {
+  const save = async (e: React.FormEvent) => {
     e.preventDefault()
-    persist(cloneRows(draft))
-    setSaved(true)
+    setSaveError('')
+    try {
+      await persist(cloneRows(draft), {
+        writeSecret: writeSecret ?? undefined,
+      })
+      setSaved(true)
+    } catch (err) {
+      setSaved(false)
+      setSaveError(err instanceof Error ? err.message : 'Không lưu được.')
+    }
   }
 
   if (!authed) {
@@ -120,6 +141,13 @@ export function AdminPage() {
         <p className="admin-page__hint">
           Nhập giá đủ <strong>VNĐ/chỉ</strong> (ví dụ 15.500.000 — có thể gõ
           không dấu chấm).
+          {isRemoteConfigured() ? (
+            <>
+              {' '}
+              <strong>Đồng bộ cloud đang bật:</strong> Lưu sẽ cập nhật giá cho
+              mọi người xem site.
+            </>
+          ) : null}
         </p>
         <form onSubmit={save}>
           <table className="admin-table">
@@ -166,6 +194,11 @@ export function AdminPage() {
             <button type="submit" className="admin-page__btn">
               Lưu giá
             </button>
+            {saveError ? (
+              <span className="admin-page__error" role="alert">
+                {saveError}
+              </span>
+            ) : null}
             {saved ? (
               <span className="admin-page__ok">Đã lưu.</span>
             ) : null}

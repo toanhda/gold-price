@@ -20,7 +20,7 @@ function formatPriceVnd(n: number): string {
 }
 
 export function GoldBoardPage() {
-  const { rows } = useGoldPrices()
+  const { rows, remoteReady } = useGoldPrices()
   const [now, setNow] = useState(formatNowVi)
   const [isFs, setIsFs] = useState(!!document.fullscreenElement)
   const [kitcoBust, setKitcoBust] = useState(() => Date.now())
@@ -51,6 +51,14 @@ export function GoldBoardPage() {
     } else {
       void document.exitFullscreen?.()
     }
+  }
+
+  if (!remoteReady) {
+    return (
+      <div className="gold-board gold-board--loading">
+        <p className="gold-board__loading-text">Đang tải giá…</p>
+      </div>
+    )
   }
 
   return (
