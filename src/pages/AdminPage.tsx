@@ -208,6 +208,7 @@ export function AdminPage() {
                       aria-label={`Trạng thái ${r.label}`}
                     >
                       <option value="down">Giảm</option>
+                      <option value="flat">Đứng giá</option>
                       <option value="up">Tăng</option>
                     </select>
                   </td>

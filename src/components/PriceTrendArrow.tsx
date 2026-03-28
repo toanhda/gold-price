@@ -4,7 +4,7 @@ type Props = {
   trend: PriceTrend
 }
 
-/** Mũi tên dày, xanh tăng / đỏ giảm — hiển thị TV */
+/** Tăng xanh / giảm đỏ / đứng giá vàng — hiển thị TV */
 export function PriceTrendArrow({ trend }: Props) {
   if (trend === 'up') {
     return (
@@ -18,6 +18,27 @@ export function PriceTrendArrow({ trend }: Props) {
           <path
             fill="currentColor"
             d="M24 6L44 32H30v10H18V32H4L24 6z"
+          />
+        </svg>
+      </span>
+    )
+  }
+  if (trend === 'flat') {
+    return (
+      <span className="gold-table__trend-wrap" title="Đứng giá">
+        <svg
+          className="gold-table__trend gold-table__trend--flat"
+          viewBox="0 0 48 48"
+          aria-hidden
+          focusable="false"
+        >
+          <rect
+            x="6"
+            y="20"
+            width="36"
+            height="8"
+            rx="2"
+            fill="currentColor"
           />
         </svg>
       </span>

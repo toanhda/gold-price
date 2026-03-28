@@ -9,7 +9,7 @@ const ROW_LABELS: Record<(typeof ROW_IDS)[number], string> = {
   silver: 'BẠC',
 }
 
-type PriceTrend = 'up' | 'down'
+type PriceTrend = 'up' | 'down' | 'flat'
 
 type GoldRow = {
   id: string
@@ -20,7 +20,9 @@ type GoldRow = {
 }
 
 function normalizeTrend(v: unknown): PriceTrend {
-  return v === 'up' ? 'up' : 'down'
+  if (v === 'up') return 'up'
+  if (v === 'flat') return 'flat'
+  return 'down'
 }
 
 function normalizeRowsFromBody(rows: unknown): GoldRow[] | null {
@@ -37,7 +39,8 @@ function normalizeRowsFromBody(rows: unknown): GoldRow[] | null {
     if (
       o.trend !== undefined &&
       o.trend !== 'up' &&
-      o.trend !== 'down'
+      o.trend !== 'down' &&
+      o.trend !== 'flat'
     ) {
       return null
     }

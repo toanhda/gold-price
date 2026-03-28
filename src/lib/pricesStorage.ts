@@ -1,4 +1,4 @@
-export type PriceTrend = 'up' | 'down'
+export type PriceTrend = 'up' | 'down' | 'flat'
 
 export type GoldRow = {
   id: string
@@ -21,7 +21,9 @@ export const DEFAULT_ROWS: GoldRow[] = [
 ]
 
 function normalizeTrend(v: unknown): PriceTrend {
-  return v === 'up' ? 'up' : 'down'
+  if (v === 'up') return 'up'
+  if (v === 'flat') return 'flat'
+  return 'down'
 }
 
 function isGoldRow(x: unknown): x is GoldRow {
@@ -40,7 +42,8 @@ function isGoldRow(x: unknown): x is GoldRow {
   if (
     o.trend !== undefined &&
     o.trend !== 'up' &&
-    o.trend !== 'down'
+    o.trend !== 'down' &&
+    o.trend !== 'flat'
   ) {
     return false
   }

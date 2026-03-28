@@ -387,6 +387,10 @@ button:focus-visible {
   color: #ff4d5e;
 }
 
+.gold-table__trend--flat {
+  color: #ebc94a;
+}
+
 .gold-board__unit-note {
   margin: 0;
   padding: 0.5rem 0.85rem 0.65rem;
