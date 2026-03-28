@@ -359,6 +359,34 @@ button:focus-visible {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
+.gold-table__trend-cell {
+  width: clamp(4.5rem, 10vw, 6.5rem);
+  vertical-align: middle;
+  padding: clamp(0.35rem, 1vw, 0.55rem) !important;
+}
+
+.gold-table__trend-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(2.25rem, 5vw, 3.25rem);
+}
+
+.gold-table__trend {
+  width: clamp(1.75rem, 4.2vw, 2.75rem);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+}
+
+.gold-table__trend--up {
+  color: #34e89e;
+}
+
+.gold-table__trend--down {
+  color: #ff4d5e;
+}
+
 .gold-board__unit-note {
   margin: 0;
   padding: 0.5rem 0.85rem 0.65rem;
@@ -554,7 +582,7 @@ button:focus-visible {
 }
 
 .admin-page__card--wide {
-  max-width: 640px;
+  max-width: 820px;
 }
 
 .admin-page__eyebrow {
@@ -764,6 +792,31 @@ button:focus-visible {
 .admin-table__input:focus {
   outline: none;
   border-color: rgba(110, 216, 240, 0.4);
+  box-shadow: 0 0 0 2px rgba(110, 216, 240, 0.12);
+}
+
+.admin-table__select {
+  width: 100%;
+  min-width: 6.5rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-glass);
+  background: rgba(8, 8, 12, 0.85);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.admin-table__select:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.admin-table__select:focus {
+  outline: none;
+  border-color: rgba(110, 216, 240, 0.45);
   box-shadow: 0 0 0 2px rgba(110, 216, 240, 0.12);
 }
 

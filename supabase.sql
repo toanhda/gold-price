@@ -18,15 +18,18 @@ create policy "prices_select_public"
 -- Không cho anon ghi — chỉ API Vercel (service role) ghi
 -- (mặc định không có policy INSERT/UPDATE cho anon)
 
+-- Phần INSERT bên dưới là tùy chọn (dữ liệu mẫu). Có thể bỏ qua:
+-- lần đầu admin Lưu giá trên web sẽ upsert id=1 qua API.
+
 insert into public.prices (id, payload)
 values (
   1,
   '[
-    {"id":"24k","label":"VÀNG 24K","buy":15500000,"sell":15900000},
-    {"id":"23k","label":"VÀNG 23K","buy":15400000,"sell":15850000},
-    {"id":"610","label":"VÀNG 610","buy":9000000,"sell":10000000},
-    {"id":"10k","label":"VÀNG 10K","buy":6100000,"sell":7100000},
-    {"id":"silver","label":"BẠC","buy":130000,"sell":230000}
+    {"id":"24k","label":"VÀNG 24K","buy":15500000,"sell":15900000,"trend":"down"},
+    {"id":"23k","label":"VÀNG 23K","buy":15400000,"sell":15850000,"trend":"down"},
+    {"id":"610","label":"VÀNG 610","buy":9000000,"sell":10000000,"trend":"down"},
+    {"id":"10k","label":"VÀNG 10K","buy":6100000,"sell":7100000,"trend":"down"},
+    {"id":"silver","label":"BẠC","buy":130000,"sell":230000,"trend":"down"}
   ]'::jsonb
 )
 on conflict (id) do update set payload = excluded.payload;

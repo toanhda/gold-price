@@ -1,8 +1,11 @@
+export type PriceTrend = 'up' | 'down'
+
 export type GoldRow = {
   id: string
   label: string
   buy: number
   sell: number
+  trend: PriceTrend
 }
 
 /** Giá lưu theo VNĐ đầy đủ / chỉ */
@@ -10,24 +13,38 @@ export const STORAGE_KEY = 'gold-price-board-v2'
 const LEGACY_STORAGE_KEY = 'gold-price-board-v1'
 
 export const DEFAULT_ROWS: GoldRow[] = [
-  { id: '24k', label: 'VÀNG 24K', buy: 15_500_000, sell: 15_900_000 },
-  { id: '23k', label: 'VÀNG 23K', buy: 15_400_000, sell: 15_850_000 },
-  { id: '610', label: 'VÀNG 610', buy: 9_000_000, sell: 10_000_000 },
-  { id: '10k', label: 'VÀNG 10K', buy: 6_100_000, sell: 7_100_000 },
-  { id: 'silver', label: 'BẠC', buy: 130_000, sell: 230_000 },
+  { id: '24k', label: 'VÀNG 24K', buy: 15_500_000, sell: 15_900_000, trend: 'down' },
+  { id: '23k', label: 'VÀNG 23K', buy: 15_400_000, sell: 15_850_000, trend: 'down' },
+  { id: '610', label: 'VÀNG 610', buy: 9_000_000, sell: 10_000_000, trend: 'down' },
+  { id: '10k', label: 'VÀNG 10K', buy: 6_100_000, sell: 7_100_000, trend: 'down' },
+  { id: 'silver', label: 'BẠC', buy: 130_000, sell: 230_000, trend: 'down' },
 ]
+
+function normalizeTrend(v: unknown): PriceTrend {
+  return v === 'up' ? 'up' : 'down'
+}
 
 function isGoldRow(x: unknown): x is GoldRow {
   if (!x || typeof x !== 'object') return false
   const o = x as Record<string, unknown>
-  return (
-    typeof o.id === 'string' &&
-    typeof o.label === 'string' &&
-    typeof o.buy === 'number' &&
-    typeof o.sell === 'number' &&
-    Number.isFinite(o.buy) &&
-    Number.isFinite(o.sell)
-  )
+  if (
+    typeof o.id !== 'string' ||
+    typeof o.label !== 'string' ||
+    typeof o.buy !== 'number' ||
+    typeof o.sell !== 'number' ||
+    !Number.isFinite(o.buy) ||
+    !Number.isFinite(o.sell)
+  ) {
+    return false
+  }
+  if (
+    o.trend !== undefined &&
+    o.trend !== 'up' &&
+    o.trend !== 'down'
+  ) {
+    return false
+  }
+  return true
 }
 
 function parseRowsFromJson(
@@ -50,6 +67,7 @@ function parseRowsFromJson(
       label: d.label,
       buy: Math.max(0, Math.round(item.buy * mult)),
       sell: Math.max(0, Math.round(item.sell * mult)),
+      trend: normalizeTrend(item.trend),
     })
   }
   return rows
@@ -86,6 +104,7 @@ export function saveRows(rows: GoldRow[]): void {
     label: r.label,
     buy: r.buy,
     sell: r.sell,
+    trend: r.trend,
   }))
   localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
 }
@@ -107,6 +126,7 @@ export function normalizeRowsFromUnknown(rows: unknown): GoldRow[] | null {
       label: d.label,
       buy: Math.max(0, Math.round(item.buy)),
       sell: Math.max(0, Math.round(item.sell)),
+      trend: normalizeTrend(item.trend),
     })
   }
   return out

@@ -2,8 +2,8 @@
 
 Bảng giá vàng dạng màn hình TV (React + Vite), quản trị `/admin` (`admin` / `123456`).
 
-- **Không cấu hình gì thêm:** giá chỉ lưu trên trình duyệt (`localStorage`), mỗi máy một bản.
-- **Muốn mọi người xem chung một bảng giá (miễn phí):** dùng [Supabase](https://supabase.com) (free tier) + API `api/prices.ts` trên Vercel — hướng dẫn bên dưới.
+- **Chỉ deploy Vercel, không cấu hình Supabase:** vào `/admin` chỉnh giá **ngay được**. Giá lưu trên **từng trình duyệt** (`localStorage`), mỗi máy một bản — **không cần SQL hay bước nào khác**.
+- **Muốn mọi người xem chung một bảng giá:** cần [Supabase](https://supabase.com) (free) + biến môi trường trên Vercel — xem mục dưới. **Database không tự tạo chỉ bằng deploy:** phải **một lần** tạo bảng trên Supabase (nhanh nhất: chạy [`supabase.sql`](supabase.sql) trong SQL Editor). **Không bắt buộc** chạy phần `INSERT` trong file đó: sau khi có bảng + env, lần đầu admin **Lưu giá** sẽ tự ghi dữ liệu (API dùng upsert).
 
 ## Chạy local
 
@@ -28,7 +28,7 @@ Output: `dist/`.
 
 ## Đồng bộ giá cho mọi người (Supabase + Vercel, $0)
 
-1. Tạo project **Supabase** → SQL Editor → chạy nội dung file [`supabase.sql`](supabase.sql).
+1. Tạo project **Supabase** → **SQL Editor** → chạy file [`supabase.sql`](supabase.sql) (tạo bảng + quyền đọc). Có thể **bỏ qua** phần `INSERT` ở cuối nếu không muốn dữ liệu mẫu — chỉ cần bảng `prices` và policy; **lần đầu** vào admin bấm **Lưu giá** sẽ tự tạo/ghi dòng `id = 1`.
 2. Vào **Project Settings → API**: copy `URL` và `anon` `public`, `service_role` (secret).
 3. Trên **Vercel** → Project → **Settings → Environment Variables** (Production + Preview):
 
@@ -43,6 +43,12 @@ Output: `dist/`.
 4. Redeploy. Mọi người mở site sẽ đọc giá từ Supabase; admin **Lưu giá** sẽ ghi qua `POST /api/prices` (không lộ service role ra trình duyệt).
 
 Copy mẫu biến môi trường: [`.env.example`](.env.example).
+
+### Đã có bảng từ trước — thêm field mới trong JSON (ví dụ `trend`)
+
+- Cột `payload` kiểu **jsonb**: có thể chứa cấu trúc JSON thay đổi theo từng phiên bản app **không cần** chạy lại SQL hay `ALTER TABLE`.
+- Dữ liệu cũ trong Supabase **chưa có** `trend` vẫn đọc được: app tự coi là **giảm** (`down`) cho tới khi bạn chỉnh trong admin.
+- Việc cần làm: **deploy** bản code mới → vào **Admin** → chỉnh trạng thái từng dòng → **Lưu giá** — toàn bộ `payload` được ghi lại kèm `trend`. **Không** cần chạy SQL lần nữa.
 
 ## Deploy Vercel — hướng dẫn từng bước (không cần biết sẵn)
 

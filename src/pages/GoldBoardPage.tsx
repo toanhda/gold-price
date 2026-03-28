@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { PriceTrendArrow } from '../components/PriceTrendArrow'
 import { useGoldPrices } from '../hooks/useGoldPrices'
 
 /** Biểu đồ Kitco do tygiausd cập nhật (PNG), giống khối #kitco trên trang nguồn */
@@ -108,6 +109,7 @@ export function GoldBoardPage() {
                 <th>LOẠI VÀNG</th>
                 <th>GIÁ MUA</th>
                 <th>GIÁ BÁN</th>
+                <th>TRẠNG THÁI</th>
               </tr>
             </thead>
             <tbody>
@@ -119,6 +121,9 @@ export function GoldBoardPage() {
                   </td>
                   <td className="gold-table__num">
                     {formatPriceVnd(r.sell)}
+                  </td>
+                  <td className="gold-table__trend-cell">
+                    <PriceTrendArrow trend={r.trend} />
                   </td>
                 </tr>
               ))}

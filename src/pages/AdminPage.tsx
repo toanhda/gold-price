@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGoldPrices } from '../hooks/useGoldPrices'
 import { isRemoteConfigured } from '../lib/remotePrices'
-import type { GoldRow } from '../lib/pricesStorage'
+import type { GoldRow, PriceTrend } from '../lib/pricesStorage'
 
 const AUTH_KEY = 'gold-admin-auth'
 /** Lưu session để sau F5 vẫn gọi được API lưu giá (chỉ tab hiện tại) */
@@ -68,6 +68,17 @@ export function AdminPage() {
       const val = !Number.isFinite(n) ? 0 : Math.max(0, Math.round(n))
       next[index] =
         field === 'buy' ? { ...row, buy: val } : { ...row, sell: val }
+      return next
+    })
+    setSaved(false)
+  }
+
+  const updateTrend = (index: number, trend: PriceTrend) => {
+    setDraft((prev) => {
+      const next = cloneRows(prev)
+      const row = next[index]
+      if (!row) return prev
+      next[index] = { ...row, trend }
       return next
     })
     setSaved(false)
@@ -160,6 +171,7 @@ export function AdminPage() {
                 <th>
                   Giá bán <span className="admin-table__unit">(VNĐ/chỉ)</span>
                 </th>
+                <th>Trạng thái</th>
               </tr>
             </thead>
             <tbody>
@@ -185,6 +197,19 @@ export function AdminPage() {
                       value={r.sell}
                       onChange={(e) => updateCell(i, 'sell', e.target.value)}
                     />
+                  </td>
+                  <td>
+                    <select
+                      className="admin-table__select"
+                      value={r.trend}
+                      onChange={(e) =>
+                        updateTrend(i, e.target.value as PriceTrend)
+                      }
+                      aria-label={`Trạng thái ${r.label}`}
+                    >
+                      <option value="down">Giảm</option>
+                      <option value="up">Tăng</option>
+                    </select>
                   </td>
                 </tr>
               ))}

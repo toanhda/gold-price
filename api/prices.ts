@@ -9,11 +9,18 @@ const ROW_LABELS: Record<(typeof ROW_IDS)[number], string> = {
   silver: 'BẠC',
 }
 
+type PriceTrend = 'up' | 'down'
+
 type GoldRow = {
   id: string
   label: string
   buy: number
   sell: number
+  trend: PriceTrend
+}
+
+function normalizeTrend(v: unknown): PriceTrend {
+  return v === 'up' ? 'up' : 'down'
 }
 
 function normalizeRowsFromBody(rows: unknown): GoldRow[] | null {
@@ -27,11 +34,19 @@ function normalizeRowsFromBody(rows: unknown): GoldRow[] | null {
     if (o.id !== id) return null
     if (typeof o.buy !== 'number' || typeof o.sell !== 'number') return null
     if (!Number.isFinite(o.buy) || !Number.isFinite(o.sell)) return null
+    if (
+      o.trend !== undefined &&
+      o.trend !== 'up' &&
+      o.trend !== 'down'
+    ) {
+      return null
+    }
     out.push({
       id,
       label: ROW_LABELS[id],
       buy: Math.max(0, Math.round(o.buy)),
       sell: Math.max(0, Math.round(o.sell)),
+      trend: normalizeTrend(o.trend),
     })
   }
   return out
@@ -78,22 +93,24 @@ export default async function handler(
     return res.status(400).json({ error: 'Invalid rows' })
   }
 
-  const patch = await fetch(`${supabaseUrl}/rest/v1/prices?id=eq.1`, {
-    method: 'PATCH',
+  /** Upsert: tạo dòng id=1 nếu chưa có — không cần chạy INSERT trong SQL trước */
+  const upsert = await fetch(`${supabaseUrl}/rest/v1/prices`, {
+    method: 'POST',
     headers: {
       apikey: serviceKey,
       Authorization: `Bearer ${serviceKey}`,
       'Content-Type': 'application/json',
-      Prefer: 'return=minimal',
+      Prefer: 'resolution=merge-duplicates,return=minimal',
     },
     body: JSON.stringify({
+      id: 1,
       payload: normalized,
       updated_at: new Date().toISOString(),
     }),
   })
 
-  if (!patch.ok) {
-    const text = await patch.text()
+  if (!upsert.ok) {
+    const text = await upsert.text()
     return res.status(500).json({ error: text || 'Database error' })
   }
 
