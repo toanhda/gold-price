@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PriceTrendArrow } from '../components/PriceTrendArrow'
+import { TradingViewSpotGoldChart } from '../components/TradingViewSpotGoldChart'
 import { useGoldPrices } from '../hooks/useGoldPrices'
 
-/** Biểu đồ Kitco do tygiausd cập nhật (PNG), giống khối #kitco trên trang nguồn */
-const KITCO_CHART_URL = 'https://tygiausd.org/giavangonline/kitco.png'
-const KITCO_SOURCE_PAGE =
-  'https://tygiausd.org/giavangthegioi/gia-vang-the-gioi-truc-tuyen-gia-vang-online'
+/** Trang bài viết GiaVang (cùng biểu đồ Spot gold — widget TradingView) */
+const CHART_SOURCE_PAGE =
+  'https://giavang.net/bieu-do-gia-vang-the-gioi-spot-gold/'
 
 function formatNowVi(): string {
   const d = new Date()
@@ -24,9 +24,6 @@ export function GoldBoardPage() {
   const { rows, remoteReady } = useGoldPrices()
   const [now, setNow] = useState(formatNowVi)
   const [isFs, setIsFs] = useState(!!document.fullscreenElement)
-  const [kitcoBust, setKitcoBust] = useState(() => Date.now())
-  const [kitcoFailed, setKitcoFailed] = useState(false)
-
   useEffect(() => {
     const t = setInterval(() => setNow(formatNowVi()), 1000)
     return () => clearInterval(t)
@@ -36,14 +33,6 @@ export function GoldBoardPage() {
     const onFs = () => setIsFs(!!document.fullscreenElement)
     document.addEventListener('fullscreenchange', onFs)
     return () => document.removeEventListener('fullscreenchange', onFs)
-  }, [])
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setKitcoFailed(false)
-      setKitcoBust(Date.now())
-    }, 5 * 60 * 1000)
-    return () => window.clearInterval(id)
   }, [])
 
   const toggleFullscreen = () => {
@@ -139,28 +128,24 @@ export function GoldBoardPage() {
             <div className="gold-board__clock">{now}</div>
           </div>
           <div className="gold-board__chart gold-board__panel gold-board__panel--chart">
-            <div className="gold-board__kitco-body">
-              {kitcoFailed ? (
-                <div className="gold-board__chart-fallback">
-                  <p>Không tải được biểu đồ. Mở trang nguồn:</p>
-                  <a
-                    href={KITCO_SOURCE_PAGE}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {KITCO_SOURCE_PAGE}
-                  </a>
-                </div>
-              ) : (
-                <img
-                  className="gold-board__kitco-img"
-                  src={`${KITCO_CHART_URL}?i=${kitcoBust}`}
-                  alt="Biểu đồ giá vàng Kitco hôm nay"
-                  loading="lazy"
-                  decoding="async"
-                  onError={() => setKitcoFailed(true)}
-                />
-              )}
+            <div className="gold-board__chart-head">
+              Biểu đồ giá vàng thế giới — Spot gold
+            </div>
+            <div className="gold-board__chart-frame">
+              <TradingViewSpotGoldChart />
+            </div>
+            <div className="gold-board__chart-foot">
+              <p className="gold-board__chart-foot-text">
+                Cùng widget TradingView (XAUUSD) như{' '}
+                <a
+                  href={CHART_SOURCE_PAGE}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GiaVang.Net
+                </a>
+                .
+              </p>
             </div>
           </div>
         </aside>

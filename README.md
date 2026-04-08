@@ -104,6 +104,6 @@ Project → **Settings** → **Domains** → thêm domain và làm theo hướng
 
 File [`vercel.json`](vercel.json) trong repo đã cấu hình rewrite SPA; route `/api/prices` do Vercel chạy serverless, **không** cần bạn cấu hình thêm trong dashboard.
 
-## Biểu đồ Kitco
+## Biểu đồ giá vàng thế giới (Spot gold)
 
-Ảnh từ [tygiausd.org/giavangonline/kitco.png](https://tygiausd.org/giavangonline/kitco.png) — cùng nguồn [trang giá vàng thế giới / Kitco](https://tygiausd.org/giavangthegioi/gia-vang-the-gioi-truc-tuyen-gia-vang-online).
+Trang bảng giá dùng **widget TradingView** (cùng symbol `FOREXCOM:XAUUSD` và cấu hình như trên [GiaVang.Net — Spot gold](https://giavang.net/bieu-do-gia-vang-the-gioi-spot-gold/)), không nhúng cả trang web — chỉ khối biểu đồ.
