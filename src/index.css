@@ -245,10 +245,16 @@ button:focus-visible {
 .gold-board__body {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 40%);
+  grid-template-columns: minmax(0, 1fr) minmax(480px, 46%);
   gap: clamp(1rem, 2vw, 1.75rem);
   align-items: stretch;
   min-height: 0;
+}
+
+@media (max-width: 1100px) {
+  .gold-board__body {
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 44%);
+  }
 }
 
 @media (max-width: 900px) {
@@ -259,6 +265,12 @@ button:focus-visible {
 
 .gold-board__table-wrap {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.65rem, 1.2vw, 1rem);
+  flex: 1;
+  min-height: 0;
+  align-self: stretch;
 }
 
 .gold-board__panel {
@@ -275,6 +287,10 @@ button:focus-visible {
 
 .gold-board__panel--table {
   position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: min(50vh, 560px);
 }
 
 .gold-board__panel--table::before {
@@ -299,6 +315,7 @@ button:focus-visible {
 .gold-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   font-size: clamp(0.9rem, 1.65vw, 1.2rem);
   position: relative;
   z-index: 1;
@@ -307,8 +324,9 @@ button:focus-visible {
 .gold-table th,
 .gold-table td {
   border: 1px solid var(--cell-border);
-  padding: clamp(0.5rem, 1.1vw, 0.85rem) clamp(0.55rem, 1.2vw, 1rem);
+  padding: clamp(0.75rem, 1.8vw, 1.2rem) clamp(0.6rem, 1.3vw, 1.05rem);
   text-align: center;
+  vertical-align: middle;
 }
 
 .gold-table thead th {
@@ -319,13 +337,15 @@ button:focus-visible {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-size: clamp(0.78rem, 1.35vw, 0.95rem);
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
+  padding-top: clamp(0.85rem, 1.6vw, 1.1rem);
+  padding-bottom: clamp(0.85rem, 1.6vw, 1.1rem);
   border-bottom: 2px solid rgba(0, 0, 0, 0.4);
 }
 
 .gold-table tbody tr {
   transition: filter 0.15s ease;
+  height: auto;
+  min-height: clamp(3.25rem, 7vh, 4.75rem);
 }
 
 .gold-table tbody tr:nth-child(even) td {
@@ -362,14 +382,14 @@ button:focus-visible {
 .gold-table__trend-cell {
   width: clamp(4.5rem, 10vw, 6.5rem);
   vertical-align: middle;
-  padding: clamp(0.35rem, 1vw, 0.55rem) !important;
+  padding: clamp(0.6rem, 1.3vw, 1rem) clamp(0.45rem, 1vw, 0.75rem) !important;
 }
 
 .gold-table__trend-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: clamp(2.25rem, 5vw, 3.25rem);
+  min-height: clamp(2.75rem, 6vw, 3.75rem);
 }
 
 .gold-table__trend {
@@ -442,14 +462,15 @@ button:focus-visible {
 
 .gold-board__chart {
   flex: 1;
-  min-height: clamp(220px, 38vh, 520px);
+  min-height: clamp(320px, 48vh, 800px);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .gold-board__panel--chart {
-  min-height: clamp(220px, 38vh, 520px);
+  min-height: clamp(320px, 48vh, 800px);
+  overflow: visible;
 }
 
 .gold-board__chart-head {
@@ -458,7 +479,7 @@ button:focus-visible {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: var(--muted);
-  padding: 0.5rem 0.45rem 0.35rem;
+  padding: 0.55rem 0.6rem 0.4rem;
   text-align: center;
 }
 
@@ -467,65 +488,69 @@ button:focus-visible {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 0 0.45rem 0.35rem;
-  background: radial-gradient(
-      ellipse 80% 60% at 50% 0%,
-      rgba(40, 36, 52, 0.6),
-      transparent 70%
-    ),
-    #0a090e;
-  overflow: hidden;
+  padding: 0.5rem 0.55rem 0.45rem;
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  overflow: visible;
 }
 
-.gold-board__chart-tv-root {
+.gold-board__giavang-wrap {
   flex: 1;
+  min-height: min(58vh, 640px);
   width: 100%;
-  min-height: 0;
-  min-width: 0;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
-  background: #0a090e;
-}
-
-.gold-board__chart-tv-root .tradingview-widget-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: min(52vh, 480px);
 }
 
-.gold-board__chart-tv-root .tradingview-widget-container__widget {
-  flex: 1;
-  min-height: 280px;
-}
-
-.gold-board__chart-tv-root .tradingview-widget-copyright {
-  font-size: 0.7rem;
-  line-height: 1.3;
-  margin-top: 0.35rem;
+.gold-board__giavang-status {
+  margin: 0 0 0.5rem;
+  padding: 0.75rem 0.5rem;
   text-align: center;
-}
-
-.gold-board__chart-tv-root .tradingview-widget-copyright .blue-text {
-  color: var(--cyan);
-}
-
-.gold-board__chart-foot {
-  padding: 0.35rem 0.45rem 0.5rem;
-}
-
-.gold-board__chart-foot-text {
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   color: var(--muted);
-  line-height: 1.45;
-  text-align: center;
-  margin: 0;
 }
 
-.gold-board__chart-foot-text a {
+.gold-board__giavang-status--error {
+  color: #ff8a8a;
+}
+
+.gold-board__giavang-status--error a {
   color: var(--cyan);
-  word-break: break-all;
+}
+
+/* Nội dung bài WP (TradingView + quảng cáo như trên GiaVang) */
+.gold-board__giavang-entry {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  border-radius: 10px;
+  padding: 0.5rem;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 4px 6px rgba(0, 0, 0, 0.08),
+    0 20px 50px rgba(0, 0, 0, 0.25);
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.gold-board__giavang-entry .tradingview-widget-container {
+  min-height: 610px;
+}
+
+.gold-board__giavang-entry .tradingview-widget-copyright {
+  font-size: 0.72rem;
+  margin-top: 0.5rem;
+  text-align: center;
+  color: rgba(55, 60, 70, 0.85);
+}
+
+.gold-board__giavang-entry .tradingview-widget-copyright .blue-text {
+  color: #2962ff;
 }
 
 .gold-board__footer {

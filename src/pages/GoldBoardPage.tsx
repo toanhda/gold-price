@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PriceTrendArrow } from '../components/PriceTrendArrow'
-import { TradingViewSpotGoldChart } from '../components/TradingViewSpotGoldChart'
+import { GiaVangEntryContent } from '../components/GiaVangEntryContent'
 import { useGoldPrices } from '../hooks/useGoldPrices'
-
-/** Trang bài viết GiaVang (cùng biểu đồ Spot gold — widget TradingView) */
-const CHART_SOURCE_PAGE =
-  'https://giavang.net/bieu-do-gia-vang-the-gioi-spot-gold/'
 
 function formatNowVi(): string {
   const d = new Date()
@@ -91,6 +87,10 @@ export function GoldBoardPage() {
 
       <div className="gold-board__body">
         <div className="gold-board__table-wrap">
+          <div className="gold-board__clock-card">
+            <span className="gold-board__clock-label">Thời gian</span>
+            <div className="gold-board__clock">{now}</div>
+          </div>
           <div className="gold-board__panel gold-board__panel--table">
             <table className="gold-table">
             <thead>
@@ -123,29 +123,12 @@ export function GoldBoardPage() {
         </div>
 
         <aside className="gold-board__aside">
-          <div className="gold-board__clock-card">
-            <span className="gold-board__clock-label">Thời gian</span>
-            <div className="gold-board__clock">{now}</div>
-          </div>
           <div className="gold-board__chart gold-board__panel gold-board__panel--chart">
             <div className="gold-board__chart-head">
               Biểu đồ giá vàng thế giới — Spot gold
             </div>
             <div className="gold-board__chart-frame">
-              <TradingViewSpotGoldChart />
-            </div>
-            <div className="gold-board__chart-foot">
-              <p className="gold-board__chart-foot-text">
-                Cùng widget TradingView (XAUUSD) như{' '}
-                <a
-                  href={CHART_SOURCE_PAGE}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GiaVang.Net
-                </a>
-                .
-              </p>
+              <GiaVangEntryContent />
             </div>
           </div>
         </aside>

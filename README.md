@@ -106,4 +106,4 @@ File [`vercel.json`](vercel.json) trong repo đã cấu hình rewrite SPA; route
 
 ## Biểu đồ giá vàng thế giới (Spot gold)
 
-Trang bảng giá dùng **widget TradingView** (cùng symbol `FOREXCOM:XAUUSD` và cấu hình như trên [GiaVang.Net — Spot gold](https://giavang.net/bieu-do-gia-vang-the-gioi-spot-gold/)), không nhúng cả trang web — chỉ khối biểu đồ.
+Khối biểu đồ lấy **toàn bộ HTML** trong `penci-entry-content entry-content` của trang [GiaVang.Net — Spot gold](https://giavang.net/bieu-do-gia-vang-the-gioi-spot-gold/) qua WordPress REST API (`/wp-json/wp/v2/pages?slug=bieu-do-gia-vang-the-gioi-spot-gold` → `content.rendered`), rồi inject vào app và chạy lại thẻ `<script>` (TradingView, v.v.).
